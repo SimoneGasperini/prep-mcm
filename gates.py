@@ -24,12 +24,12 @@ def y_parallel(qreg):
 
 @qasm2.extended
 def z(qreg, i):
-    qasm2.u(qreg[i], 0, 0, math.pi)
+    qasm2.rz(qreg[i], math.pi)
 
 
 @qasm2.extended
 def z_parallel(qreg):
-    qasm2.parallel.u(qreg, 0, 0, math.pi)
+    qasm2.parallel.rz(qreg, math.pi)
 
 
 @qasm2.extended
@@ -44,22 +44,22 @@ def h_parallel(qreg):
 
 @qasm2.extended
 def s(qreg, i):
-    qasm2.u(qreg[i], 0, 0, math.pi / 2)
+    qasm2.rz(qreg[i], math.pi / 2)
 
 
 @qasm2.extended
 def s_parallel(qreg):
-    qasm2.parallel.u(qreg, 0, 0, math.pi / 2)
+    qasm2.parallel.rz(qreg, math.pi / 2)
 
 
 @qasm2.extended
 def st(qreg, i):
-    qasm2.u(qreg[i], 0, 0, -math.pi / 2)
+    qasm2.rz(qreg[i], -math.pi / 2)
 
 
 @qasm2.extended
 def st_parallel(qreg):
-    qasm2.parallel.u(qreg, 0, 0, -math.pi / 2)
+    qasm2.parallel.rz(qreg, -math.pi / 2)
 
 
 @qasm2.extended
