@@ -30,3 +30,13 @@ class GHZ(Circuit):
                         cx(qreg, k, k + half)
 
         return cls(kernel=kernel, num_qubits=num_qubits)
+
+    def compute_fidelity(self, num_shots):
+        probs_z_basis = self.measure_z_basis(num_shots // 2)
+        probs_x_basis = self.measure_x_basis(num_shots // 2)
+        zeros = "0" * self.num_qubits
+        ones = "1" * self.num_qubits
+        p0 = probs_z_basis.get(zeros, 0)
+        p1 = probs_z_basis.get(ones, 0)
+        xn = sum((-1) ** (b.count("1") % 2) * p for b, p in probs_x_basis.items())
+        return (p0 + p1 + xn) / 2
