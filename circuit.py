@@ -1,6 +1,5 @@
-from bloqade import qasm2
+from bloqade import squin
 from bloqade.pyqrack import StackMemorySimulator
-from gates import h_parallel
 
 
 class Circuit:
@@ -16,13 +15,11 @@ class Circuit:
         }
 
     def measure_z_basis(self, num_shots):
-        @qasm2.extended
+        @squin.kernel
         def kernel():
-            qreg = qasm2.qreg(self.num_qubits)
-            creg = qasm2.creg(self.num_qubits)
-            self.kernel(qreg, creg)
-            qasm2.measure(qreg, creg)
-            return creg
+            qreg = squin.qalloc(self.num_qubits)
+            self.kernel(qreg)
+            return squin.broadcast.measure(qreg)
 
         sim = StackMemorySimulator(min_qubits=self.num_qubits)
         res = sim.task(kernel=kernel).batch_run(shots=num_shots)
@@ -30,14 +27,12 @@ class Circuit:
         return probs
 
     def measure_x_basis(self, num_shots):
-        @qasm2.extended
+        @squin.kernel
         def kernel():
-            qreg = qasm2.qreg(self.num_qubits)
-            creg = qasm2.creg(self.num_qubits)
-            self.kernel(qreg, creg)
-            h_parallel(qreg)
-            qasm2.measure(qreg, creg)
-            return creg
+            qreg = squin.qalloc(self.num_qubits)
+            self.kernel(qreg)
+            squin.broadcast.h(qreg)
+            return squin.broadcast.measure(qreg)
 
         sim = StackMemorySimulator(min_qubits=self.num_qubits)
         res = sim.task(kernel=kernel).batch_run(shots=num_shots)
