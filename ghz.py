@@ -32,21 +32,23 @@ class GHZ(Circuit):
 
     @classmethod
     def const_depth(cls, num_qubits):
+        # ref: https://arxiv.org/abs/2206.15405
         @squin.kernel
         def kernel(qreg):
             squin.broadcast.h(qreg[0::2])
-            squin.broadcast.cx(qreg[0::2], qreg[1::2])
-            squin.broadcast.cx(qreg[1 : num_qubits - 1 : 2], qreg[2::2])
+            last = num_qubits - 1
+            squin.broadcast.cx(qreg[0:last:2], qreg[1::2])
+            squin.broadcast.cx(qreg[1:last:2], qreg[2::2])
             meas = squin.broadcast.measure(qreg[2::2])
             par = 0
             k = 0
-            for i in range(2, num_qubits - 1, 2):
+            for i in range(2, last, 2):
                 par = par ^ meas[k]
                 if par == 1:
                     squin.x(qreg[i + 1])
                 k += 1
             squin.broadcast.reset(qreg[2::2])
-            squin.broadcast.cx(qreg[1 : num_qubits - 1 : 2], qreg[2::2])
+            squin.broadcast.cx(qreg[1:last:2], qreg[2::2])
 
         return cls(kernel=kernel, num_qubits=num_qubits)
 
