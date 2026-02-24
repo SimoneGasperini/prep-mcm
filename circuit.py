@@ -1,5 +1,6 @@
 from bloqade import squin
 from bloqade.pyqrack import StackMemorySimulator
+from noise import NoisePass
 
 
 class Circuit:
@@ -13,6 +14,10 @@ class Circuit:
             "".join(str(bit.value) for bit in bitstr): prob
             for bitstr, prob in result.items()
         }
+
+    def add_noise(self, noise_model):
+        noise_pass = NoisePass(self.kernel.dialects, noise_model=noise_model())
+        noise_pass.unsafe_run(self.kernel)
 
     def measure_z_basis(self, num_shots):
         @squin.kernel
